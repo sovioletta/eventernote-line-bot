@@ -57,7 +57,6 @@ for event in push_queue:
         # TODO: exception handling
         pass
 
-# cleanup pushed_list if date is expired (2 weeks)
 cleanup_list = []
 for event_id in pushed_list:
     event_date = pushed_list[event_id]
