@@ -9,7 +9,10 @@ def event_soup_to_json(event_soup):
     else:
         event_place = None
     event_date = event_soup.find('div', attrs={'class': 'date'}).text.strip().split()[0]
-    event_time = event_soup.find_all('div', attrs={'class': 'place'})[-1].text.strip()
+    if event_soup.find_all('div', attrs={'class': 'place'}):
+        event_time = event_soup.find_all('div', attrs={'class': 'place'})[-1].text.strip()
+    else:
+        event_time = ''
     event_actors = []
     actors_list_inner = event_soup.find('div', attrs={'class': 'actor'}).find_all('li')[1:]
     for actor_inner in actors_list_inner:
