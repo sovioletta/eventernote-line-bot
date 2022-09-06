@@ -1,3 +1,5 @@
+import configparser
+
 import requests
 import utils
 import time
@@ -7,10 +9,12 @@ from linebot.exceptions import LineBotApiError
 from datetime import datetime, timedelta
 from bs4 import BeautifulSoup
 
-# Settings
-username = ''
-line_channel_access_token = ''
-line_receiver_uid = ''
+
+config = configparser.ConfigParser()
+config.read('./configs.ini')
+username = config['eventernote']['username']
+line_channel_access_token = config['line']['access_token']
+line_receiver_uid = config['line']['receiver_uid']
 
 dump_file = './event_history'
 base_date = (datetime.today() - timedelta(days=7)).strftime('%Y-%m-%d')
