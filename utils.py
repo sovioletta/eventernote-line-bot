@@ -7,7 +7,7 @@ def event_soup_to_json(event_soup):
     if len(event_soup.find_all('div', attrs={'class': 'place'})) == 2:
         event_place = event_soup.find_all('div', attrs={'class': 'place'})[0].find('a').text.strip()
     else:
-        event_place = None
+        event_place = ''
     event_date = event_soup.find('div', attrs={'class': 'date'}).text.strip().split()[0]
     if event_soup.find_all('div', attrs={'class': 'place'}):
         event_time = event_soup.find_all('div', attrs={'class': 'place'})[-1].text.strip()
