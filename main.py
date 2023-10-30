@@ -1,6 +1,8 @@
 import configparser
 
 import requests
+
+import sheet_helper
 import utils
 import time
 from linebot import LineBotApi
@@ -15,6 +17,8 @@ config.read('./configs.ini')
 username = config['eventernote']['username']
 line_channel_access_token = config['line']['access_token']
 line_receiver_uid = config['line']['receiver_uid']
+sheet_id = config['googlesheet']['sheet_id']
+sheet_name = username
 
 dump_file = './event_history'
 base_date = (datetime.today() - timedelta(days=7)).strftime('%Y-%m-%d')
@@ -47,6 +51,7 @@ for actor in actors_list:
     time.sleep(1)
 
 line_bot_api = LineBotApi(line_channel_access_token)
+sheet = sheet_helper.init_sheet()
 for event in push_queue:
     message = '[{date}]\n{title}\n{time}\n{actors}\n{place}\n{url}'.format(title=event['name'],
                                                                            date=event['date'],
@@ -55,8 +60,12 @@ for event in push_queue:
                                                                            actors=', '.join(event['actors']),
                                                                            url=event['url'])
     try:
+        # send to line
         line_bot_api.push_message(line_receiver_uid, TextSendMessage(text=message))
         pushed_list[event['id']] = event['date']
+
+        # write to googlesheet
+        sheet_helper.add_event(sheet, sheet_id, sheet_name, event['date'], event['name'], event['url'])
     except LineBotApiError as e:
         # TODO: exception handling
         pass
